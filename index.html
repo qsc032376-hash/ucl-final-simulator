@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2026 UCL Final Simulator</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="score-band">
+        <div>
+          <p class="eyebrow">2026 UEFA Champions League Final</p>
+          <h1>Paris Saint-Germain vs Arsenal</h1>
+        </div>
+        <div class="scoreboard" aria-live="polite">
+          <span id="psgScore">0</span>
+          <span class="divider">:</span>
+          <span id="arsScore">0</span>
+          <small id="clockLabel">赛前</small>
+        </div>
+      </section>
+
+      <section class="control-grid">
+        <aside class="panel setup-panel">
+          <div class="section-title">
+            <h2>执教席</h2>
+            <span id="stageLabel">选择球队</span>
+          </div>
+
+          <div class="team-switch" role="group" aria-label="选择执教球队">
+            <button class="team-card active" data-team="psg" type="button">
+              <span>Paris Saint-Germain</span>
+              <strong>PSG</strong>
+            </button>
+            <button class="team-card" data-team="arsenal" type="button">
+              <span>Arsenal</span>
+              <strong>ARS</strong>
+            </button>
+          </div>
+
+          <label class="field-label" for="formationSelect">阵型</label>
+          <select id="formationSelect">
+            <option value="4-3-3">4-3-3</option>
+            <option value="4-2-3-1">4-2-3-1</option>
+            <option value="3-4-3">3-4-3</option>
+            <option value="4-4-2">4-4-2</option>
+            <option value="3-5-2">3-5-2</option>
+          </select>
+
+          <label class="field-label" for="tacticSelect">初始战术</label>
+          <select id="tacticSelect">
+            <option value="balanced">均衡控场</option>
+            <option value="press">高位压迫</option>
+            <option value="possession">耐心控球</option>
+            <option value="counter">中低位反击</option>
+            <option value="direct">快速纵深</option>
+          </select>
+
+          <div class="lineup-tools">
+            <button id="autoPickBtn" type="button">智能推荐 11 人</button>
+            <button id="clearPickBtn" type="button">清空选择</button>
+          </div>
+
+          <div class="status-row">
+            <span id="lineupCount">0/11 首发</span>
+            <span id="keeperStatus">需要 1 名门将</span>
+          </div>
+
+          <button id="startBtn" class="primary" type="button" disabled>开始决赛</button>
+
+          <p class="source-note">
+            球员名单参考
+            <a href="https://www.uefa.com/uefachampionsleague/clubs/52747--paris-sg/squad/" target="_blank" rel="noreferrer">UEFA PSG 欧冠名单</a>
+            和
+            <a href="https://www.uefa.com/uefachampionsleague/clubs/52280--arsenal/squad/" target="_blank" rel="noreferrer">UEFA Arsenal 欧冠名单</a>
+            当前页面；本作是虚构决赛模拟，不代表官方预测。
+          </p>
+        </aside>
+
+        <section class="panel pitch-panel">
+          <div class="section-title">
+            <h2 id="managedTeamTitle">PSG 首发</h2>
+            <span id="formationLabel">4-3-3</span>
+          </div>
+          <div class="pitch" id="pitch" aria-label="首发阵型图"></div>
+        </section>
+
+        <section class="panel roster-panel">
+          <div class="section-title">
+            <h2>球员名单</h2>
+            <span>选择 11 人首发</span>
+          </div>
+          <div id="rosterList" class="roster-list"></div>
+        </section>
+      </section>
+
+      <section class="match-grid">
+        <div class="panel match-control">
+          <div class="section-title">
+            <h2>比赛指挥</h2>
+            <span id="subCount">换人 0/5</span>
+          </div>
+
+          <div class="coach-actions">
+            <label>
+              临场战术
+              <select id="liveTacticSelect" disabled>
+                <option value="balanced">均衡控场</option>
+                <option value="press">高位压迫</option>
+                <option value="possession">耐心控球</option>
+                <option value="counter">中低位反击</option>
+                <option value="direct">快速纵深</option>
+                <option value="protect">收缩保胜</option>
+                <option value="allout">最后猛攻</option>
+              </select>
+            </label>
+            <button id="simulateBtn" class="primary" type="button" disabled>模拟到下一个 15 分钟</button>
+          </div>
+
+          <div class="sub-box">
+            <label>
+              换下
+              <select id="subOutSelect" disabled></select>
+            </label>
+            <label>
+              换上
+              <select id="subInSelect" disabled></select>
+            </label>
+            <button id="subBtn" type="button" disabled>确认换人</button>
+          </div>
+
+          <div class="meter-wrap">
+            <div>
+              <span>比赛势头</span>
+              <strong id="momentumLabel">均势</strong>
+            </div>
+            <div class="meter">
+              <span id="momentumBar"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel event-panel">
+          <div class="section-title">
+            <h2>比赛事件</h2>
+            <span id="phaseLabel">等待开球</span>
+          </div>
+          <ol id="eventLog" class="event-log"></ol>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
