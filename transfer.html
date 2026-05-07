@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Manchester City 2026 Transfer Simulator</title>
+    <link rel="stylesheet" href="transfer.css" />
+  </head>
+  <body>
+    <main class="office">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">European Football Operations</p>
+          <h1>2026 夏季转会窗口交易模拟器</h1>
+          <p class="deck">选择欧洲联赛任意主队：买人、卖人、报价、还价、经纪人合同谈判，全部围绕 Transfermarkt 欧元身价口径运作。</p>
+          <label class="club-picker">选择主队
+            <select id="clubSelect"></select>
+          </label>
+        </div>
+        <div class="budget-card">
+          <span>可用转会预算</span>
+          <strong id="budget">€260.0m</strong>
+          <small id="wageBudget">工资空间 €1.25m/w</small>
+        </div>
+      </section>
+
+      <section class="kpi-grid">
+        <div class="kpi"><span>数据库球员</span><strong id="dbCount">0</strong></div>
+        <div class="kpi"><span>谈判中</span><strong id="activeDeals">0</strong></div>
+        <div class="kpi"><span>已成交</span><strong id="signedCount">0</strong></div>
+        <div class="kpi"><span>董事会评分</span><strong id="boardScore">72</strong></div>
+      </section>
+
+      <section class="layout">
+        <aside class="panel filter-panel">
+          <div class="panel-head">
+            <h2>球探数据库</h2>
+            <a href="index.html">欧冠决赛模拟器</a>
+          </div>
+          <label>搜索球员/俱乐部<input id="searchInput" type="search" placeholder="例如 Musiala, Bayern, DM" /></label>
+          <label>位置
+            <select id="positionFilter">
+              <option value="all">全部</option>
+              <option value="GK">门将</option>
+              <option value="CB">中卫</option>
+              <option value="FB">边后卫</option>
+              <option value="DM">后腰</option>
+              <option value="CM">中场</option>
+              <option value="AM">前腰</option>
+              <option value="WG">边锋</option>
+              <option value="ST">中锋</option>
+            </select>
+          </label>
+          <label>策略
+            <select id="strategyFilter">
+              <option value="all">全部策略</option>
+              <option value="superstar">超级巨星</option>
+              <option value="starter">即战力首发</option>
+              <option value="rotation">轮换补强</option>
+              <option value="wonderkid">未来妖人</option>
+              <option value="value">高性价比</option>
+            </select>
+          </label>
+          <label>预算上限
+            <input id="maxFee" type="range" min="20" max="220" value="220" />
+            <span id="maxFeeLabel">€220m</span>
+          </label>
+          <button id="resetBtn" type="button">重置筛选</button>
+          <p class="note">
+            身价采用
+            <a href="https://www.transfermarkt.com/" target="_blank" rel="noreferrer">Transfermarkt</a>
+            欧元 market value 口径做模拟快照；真实页面会持续更新，本游戏保留轻微浮动用于谈判平衡。
+          </p>
+        </aside>
+
+        <section class="panel database-panel">
+          <div class="panel-head">
+            <h2>目标列表</h2>
+            <span id="resultCount">0 个目标</span>
+          </div>
+          <div id="targetList" class="target-list"></div>
+        </section>
+
+        <section class="panel deal-panel">
+          <div class="panel-head">
+            <h2>交易办公室</h2>
+            <span id="dealStatus">选择一个目标</span>
+          </div>
+
+          <div id="playerProfile" class="profile-empty">从左侧数据库选择球员后开始谈判。</div>
+
+          <div class="negotiation-grid">
+            <div class="offer-box">
+              <h3>向俱乐部报价</h3>
+              <label>基础转会费 (€m)<input id="feeInput" type="number" min="0" step="1" /></label>
+              <label>浮动奖金 (€m)<input id="addonsInput" type="number" min="0" step="1" /></label>
+              <label>二转分成 (%)<input id="sellOnInput" type="number" min="0" max="30" step="1" /></label>
+              <button id="clubOfferBtn" class="primary" type="button" disabled>提交报价</button>
+              <p id="clubReply" class="reply">等待俱乐部回应。</p>
+            </div>
+
+            <div class="offer-box">
+              <h3>合同谈判</h3>
+              <label>周薪 (€k)<input id="wageInput" type="number" min="0" step="5" /></label>
+              <label>签字费 (€m)<input id="bonusInput" type="number" min="0" step="0.5" /></label>
+              <label>合同年限<input id="yearsInput" type="number" min="1" max="6" step="1" /></label>
+              <label>球队定位
+                <select id="roleInput">
+                  <option value="Key Player">核心球员</option>
+                  <option value="Important">重要轮换</option>
+                  <option value="Rotation">轮换</option>
+                  <option value="Prospect">未来计划</option>
+                </select>
+              </label>
+              <button id="contractBtn" class="primary" type="button" disabled>与经纪人谈判</button>
+              <p id="agentReply" class="reply">需要先与俱乐部达成转会费协议。</p>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <section class="bottom-grid">
+        <div class="panel">
+          <div class="panel-head"><h2 id="squadTitle">当前阵容</h2><span id="squadNeed">阵容需求分析</span></div>
+          <div id="citySquad" class="squad-grid"></div>
+        </div>
+        <div class="panel sale-panel">
+          <div class="panel-head"><h2>出售/外租办公室</h2><span id="saleStatus">选择队内球员</span></div>
+          <div id="saleProfile" class="profile-empty">点击阵容里的球员，查看潜在买家并谈出售价格。</div>
+          <div class="sale-actions">
+            <label>还价金额 (€m)<input id="saleCounterInput" type="number" min="0" step="1" /></label>
+            <button id="generateOffersBtn" type="button" disabled>刷新买家报价</button>
+          </div>
+          <div id="saleOffers" class="sale-offers"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><h2>谈判日志</h2><button id="advanceDayBtn" type="button">推进一天</button></div>
+          <ol id="logList" class="log-list"></ol>
+        </div>
+      </section>
+    </main>
+
+    <script src="transfer.js"></script>
+  </body>
+</html>
