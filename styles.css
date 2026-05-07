@@ -111,6 +111,25 @@ h1 {
   font-size: clamp(32px, 5vw, 64px);
 }
 
+.secondary-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  margin-top: 16px;
+  padding: 0 14px;
+  border: 1px solid rgba(241, 199, 91, 0.55);
+  border-radius: 8px;
+  background: rgba(5, 12, 10, 0.62);
+  color: var(--gold);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.secondary-link:hover {
+  border-color: var(--green);
+  color: var(--green);
+}
+
 h2 {
   font-size: 18px;
 }
